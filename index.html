@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rio Grande Night Club - Door Cashier</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        :root {
+            --border: #e5e7eb;
+            --border-dark: #d1d5db;
+            --text: #111827;
+            --muted: #6b7280;
+            --navy: #0f172a;
+            --green-soft: #ecfdf5;
+            --green-border: #a7f3d0;
+            --green-text: #065f46;
+            --blue-soft: #eff6ff;
+            --blue-border: #bfdbfe;
+            --blue-text: #1d4ed8;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            color: var(--text);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f5f5f5;
+        }
+
+        body { padding: 12px; }
+
+        /* Cross-browser normalization for inputs */
+        input, button {
+            font-family: inherit;
+        }
+        input::-moz-focus-inner,
+        button::-moz-focus-inner {
+            border: 0;
+            padding: 0;
+        }
+
+        .app-shell {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.05);
+            padding: 20px;
+        }
+
+        .card {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: #fff;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #111827;
+            margin: 0 0 10px;
+        }
+
+        .subtle-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .field-input {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid var(--border-dark);
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 14px;
+            line-height: 1.2;
+            outline: none;
+            background: #fff;
+            color: var(--text);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Updated Date Input specifically to fix iOS mobile scaling/corruption */
+        input[type="date"] {
+            color: var(--text);
+            background-color: #fff;
+            font-family: inherit;
+            /* Flex layout ensures the text centers nicely on iOS without squishing */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            line-height: normal;
+        }
+
+        input[type="date"]::-webkit-datetime-edit,
+        input[type="date"]::-webkit-date-and-time-value {
+            color: var(--text);
+            display: block;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0.9;
+            cursor: pointer;
+        }
+
+        input::placeholder {
+            color: #9ca3af;
+        }
+
+        .field-input:focus,
+        .table-input:focus,
+        .cash-qty:focus,
+        .percent-input:focus,
+        .deduction-text:focus,
+        .deduction-amount:focus {
+            border-color: #111827;
+        }
+
+        .minimal-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border: 1px solid var(--border-dark);
+            background: #111827;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.15s ease;
+        }
+
+        .minimal-btn:hover { opacity: 0.92; }
+        .minimal-btn.blue { background: #0f172a; color: white; }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand { display: flex; align-items: center; gap: 14px; }
+
+        .brand-badge {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .brand-title {
+            margin: 0;
+            font-size: 24px;
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+        }
+
+        .brand-subtitle {
+            margin: 4px 0 0;
+            font-size: 11px;
+            line-height: 1;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .table-wrap {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        th {
+            background: #f8fafc;
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 800;
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #eef2f7;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child td { border-bottom: none; }
+
+        .table-input {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 13px;
+            outline: none;
+            background: #fff;
+        }
+
+        .readonly-cell {
+            font-weight: 800;
+            background: #fafafa;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .readonly-money {
+            font-weight: 800;
+            background: #fafafa;
+            border-radius: 10px;
+            text-align: right;
+        }
+
+        .tfoot-row td {
+            background: var(--navy);
+            color: white;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-bottom: none;
+        }
+
+        .tfoot-row td:first-child { border-bottom-left-radius: 12px; }
+        .tfoot-row td:last-child { border-bottom-right-radius: 12px; }
+
+        .online-head th { background: #f8fbff; }
+
+        .online-money {
+            background: #f8fbff;
+            color: #0f172a;
+            font-weight: 800;
+            text-align: right;
+            border-radius: 10px;
+        }
+
+        .action-col {
+            width: 46px;
+            text-align: center;
+        }
+
+        .action-cell {
+            width: 46px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            border: none;
+            background: transparent;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 16px;
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .remove-btn:hover {
+            color: #b91c1c;
+            background: #fef2f2;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 14px;
+            align-items: start;
+        }
+
+        .cash-card,
+        .summary-card,
+        .split-card {
+            padding: 14px;
+        }
+
+        .cash-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .cash-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 6px 0;
+        }
+
+        .cash-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .cash-label {
+            font-size: 12px;
+            font-weight: 700;
+            min-width: 84px;
+        }
+
+        .cash-multiplier {
+            color: #9ca3af;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .cash-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cash-qty {
+            width: 72px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 7px 8px;
+            text-align: right;
+            font-size: 13px;
+            outline: none;
+            background: #fff;
+        }
+
+        .cash-subtotal {
+            width: 82px;
+            text-align: right;
+            font-size: 13px;
+            font-weight: 800;
+            color: #374151;
+        }
+
+        .credit-row {
+            margin-top: 8px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .summary-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            background: #fcfcfc;
+            border: 1px solid var(--border);
+        }
+
+        .summary-label {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .summary-total {
+            font-size: 40px;
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            margin: 6px 0 14px;
+        }
+
+        .summary-sub {
+            font-size: 28px;
+            line-height: 1.05;
+            font-weight: 800;
+            margin: 6px 0 0;
+            color: #374151;
+        }
+
+        .summary-divider {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .summary-diff-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 14px 0 10px;
+        }
+
+        .toggle-label {
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .split-card {
+            margin-top: 10px;
+            background: #fbfbfb;
+        }
+
+        .split-banner {
+            background: var(--navy);
+            color: white;
+            border-radius: 12px;
+            padding: 10px 14px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .split-banner .banner-amount {
+            font-size: 18px;
+            margin-left: 8px;
+            letter-spacing: normal;
+            text-transform: none;
+        }
+
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .split-box {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: white;
+            padding: 12px;
+        }
+
+        .split-box-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .percent-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .percent-input {
+            width: 64px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 7px 8px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 800;
+            outline: none;
+            background: #fff;
+        }
+
+        .percent-sign {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 800;
+        }
+
+        .split-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .split-stat-label {
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .split-stat-value {
+            font-size: 28px;
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+        }
+
+        .deduction-panel {
+            background: #fcfcfc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .deduction-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .deduction-title {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .deduction-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .deduction-row:last-child { margin-bottom: 0; }
+
+        .deduction-text,
+        .deduction-amount {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 7px 8px;
+            font-size: 12px;
+            outline: none;
+            background: white;
+        }
+
+        .deduction-text { flex: 1; }
+        .deduction-amount { width: 90px; text-align: right; }
+
+        .money-prefix {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--muted);
+        }
+
+        .final-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 2px solid #111827;
+        }
+
+        .final-label {
+            font-size: 13px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .final-value {
+            font-size: 32px;
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            color: #111827;
+        }
+
+        .print-btn {
+            width: 100%;
+            margin-top: 16px;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 16px;
+            background: #111827;
+            color: white;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .match-status {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .hidden { display: none !important; }
+        .block { display: block !important; }
+
+        .mobile-total-card {
+            display: none;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        @media screen and (max-width: 768px) {
+            body { padding: 8px; }
+
+            .app-shell {
+                padding: 14px;
+                border-radius: 16px;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .brand-title { font-size: 20px; }
+            .brand-subtitle { letter-spacing: 0.2em; }
+
+            .meta-grid,
+            .layout-grid,
+            .split-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field-input {
+                min-height: 44px;
+                font-size: 16px;
+            }
+
+            .cash-card,
+            .summary-card,
+            .split-card,
+            .split-box {
+                padding: 12px;
+            }
+
+            .cash-row,
+            .split-box-head,
+            .final-row,
+            .summary-diff-row {
+                align-items: center;
+            }
+
+            .cash-row {
+                flex-wrap: wrap;
+            }
+
+            .cash-left,
+            .cash-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .cash-label {
+                min-width: 0;
+            }
+
+            .cash-qty,
+            .cash-subtotal,
+            .percent-input,
+            .deduction-amount {
+                width: 100%;
+                max-width: 120px;
+            }
+
+            .credit-row .cash-right {
+                justify-content: flex-end;
+            }
+
+            .summary-total { font-size: 34px; }
+            .summary-sub,
+            .split-stat-value,
+            .final-value { font-size: 24px; }
+
+            .toggle-row {
+                align-items: flex-start;
+            }
+
+            .split-box-head {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .deduction-row {
+                flex-wrap: wrap;
+            }
+
+            .deduction-text {
+                flex: 1 1 100%;
+            }
+
+            .money-prefix {
+                min-width: 10px;
+            }
+
+            .minimal-btn,
+            .print-btn {
+                width: 100%;
+            }
+
+            .table-wrap {
+                overflow: visible;
+                border: none;
+                background: transparent;
+            }
+
+            .responsive-table,
+            .responsive-table thead,
+            .responsive-table tbody,
+            .responsive-table tr,
+            .responsive-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .responsive-table thead,
+            .responsive-table tfoot {
+                display: none;
+            }
+
+            .responsive-table tbody {
+                display: grid;
+                gap: 10px;
+            }
+
+            .responsive-table tr {
+                border: 1px solid var(--border);
+                border-radius: 14px;
+                background: #fff;
+                padding: 10px;
+                box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
+            }
+
+            .responsive-table td {
+                border: none;
+                padding: 0;
+                margin-bottom: 10px;
+            }
+
+            .responsive-table td:last-child {
+                margin-bottom: 0;
+            }
+
+            .responsive-table td[data-label]::before {
+                content: attr(data-label);
+                display: block;
+                margin-bottom: 5px;
+                color: var(--muted);
+                font-size: 11px;
+                font-weight: 800;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+            }
+
+            .responsive-table .readonly-cell,
+            .responsive-table .readonly-money,
+            .responsive-table .online-money {
+                text-align: left;
+                padding: 10px 12px;
+            }
+
+            .responsive-table .action-cell,
+            .responsive-table .action-col {
+                width: 100%;
+                text-align: right;
+            }
+
+            .responsive-table .action-cell::before {
+                display: none;
+            }
+
+            .remove-btn {
+                margin: 0 0 0 auto;
+            }
+
+            .mobile-total-card {
+                margin-top: 10px;
+                border: 1px solid var(--border);
+                border-radius: 14px;
+                background: var(--navy);
+                color: white;
+                padding: 12px;
+                display: grid;
+                gap: 8px;
+            }
+
+            .mobile-total-row {
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+                font-size: 12px;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+            }
+
+            .mobile-total-row span:last-child {
+                text-transform: none;
+                letter-spacing: normal;
+                text-align: right;
+            }
+        }
+
+        @media print {
+            @page {
+                size: letter portrait;
+                /* Setting margin to 0 hides the URL, page numbers, and default browser headers/footers */
+                margin: 0;
+            }
+
+            html, body {
+                width: 8.5in;
+                height: 11in;
+                background: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                overflow: hidden !important;
+            }
+
+            body {
+                /* We re-add the margin here as padding so the content doesn't hit the physical edge of the paper */
+                padding: 0.25in !important;
+                font-size: 11px !important;
+            }
+
+            .no-print { display: none !important; }
+
+            .app-shell {
+                width: 100% !important;
+                max-width: 100% !important;
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                margin: 0 !important;
+                padding: 8px !important;
+                transform: scale(0.975);
+                transform-origin: top center;
+            }
+
+            .topbar {
+                margin-bottom: 8px !important;
+                padding-bottom: 8px !important;
+            }
+
+            .brand-badge {
+                width: 34px !important;
+                height: 34px !important;
+                font-size: 11px !important;
+                border-radius: 8px !important;
+            }
+
+            .brand-title { font-size: 1.1rem !important; }
+            .brand-subtitle { font-size: 0.54rem !important; margin-top: 2px !important; }
+
+            .meta-grid {
+                gap: 8px !important;
+                margin-bottom: 8px !important;
+            }
+
+            .subtle-label {
+                font-size: 0.58rem !important;
+                margin-bottom: 3px !important;
+            }
+
+            .field-input {
+                min-height: 32px !important;
+                height: 32px !important;
+                padding: 6px 8px !important;
+                font-size: 0.72rem !important;
+                line-height: 1.1 !important;
+                border-radius: 9px !important;
+                color: #111827 !important;
+            }
+
+            input[type="date"]::-webkit-datetime-edit,
+            input[type="date"]::-webkit-date-and-time-value {
+                color: #111827 !important;
+            }
+
+            .section-title {
+                font-size: 0.68rem !important;
+                margin-bottom: 6px !important;
+            }
+
+            .table-wrap,
+            .card,
+            .split-box,
+            .summary-card,
+            .split-card,
+            .cash-card {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            th {
+                font-size: 0.65rem !important;
+                padding: 4px 5px !important;
+            }
+
+            td {
+                font-size: 0.8rem !important;
+                padding: 4px 5px !important;
+            }
+
+            .table-input {
+                padding: 5px 7px !important;
+                font-size: 0.76rem !important;
+                border-radius: 8px !important;
+            }
+
+            .readonly-cell,
+            .readonly-money,
+            .online-money {
+                font-size: 0.82rem !important;
+                padding: 5px 6px !important;
+            }
+
+            .tfoot-row td {
+                font-size: 0.68rem !important;
+                padding: 5px 6px !important;
+            }
+
+            .layout-grid {
+                gap: 8px !important;
+                align-items: start !important;
+                grid-auto-rows: min-content !important;
+            }
+
+            .cash-card,
+            .summary-card,
+            .split-card {
+                padding: 10px !important;
+                height: auto !important;
+                min-height: 0 !important;
+            }
+
+            .cash-list { gap: 3px !important; }
+            .cash-row { padding: 2px 0 !important; }
+
+            .cash-label {
+                font-size: 0.7rem !important;
+                min-width: 70px !important;
+            }
+
+            .cash-multiplier { font-size: 0.64rem !important; }
+
+            .cash-qty {
+                width: 52px !important;
+                padding: 4px 5px !important;
+                font-size: 0.72rem !important;
+                border-radius: 8px !important;
+            }
+
+            .cash-subtotal {
+                width: 74px !important;
+                font-size: 0.76rem !important;
+            }
+
+            .credit-row {
+                margin-top: 4px !important;
+                padding-top: 6px !important;
+            }
+
+            .summary-card {
+                justify-content: flex-start !important;
+                align-self: start !important;
+            }
+
+            .summary-label {
+                font-size: 0.62rem !important;
+                letter-spacing: 0.16em !important;
+            }
+
+            .summary-total {
+                font-size: 2rem !important;
+                margin: 4px 0 10px !important;
+            }
+
+            .summary-sub { font-size: 1.2rem !important; }
+
+            .summary-divider {
+                margin-top: 8px !important;
+                padding-top: 8px !important;
+            }
+
+            .summary-diff-row { font-size: 0.82rem !important; }
+
+            #difference-amount {
+                font-size: 1rem !important;
+                font-weight: 800 !important;
+            }
+
+            .toggle-row {
+                margin: 8px 0 6px !important;
+            }
+
+            .toggle-label { font-size: 0.7rem !important; }
+
+            .split-card {
+                margin-top: 6px !important;
+                padding: 8px !important;
+            }
+
+            .split-banner {
+                margin-bottom: 8px !important;
+                padding: 7px 10px !important;
+                font-size: 0.62rem !important;
+            }
+
+            .split-banner .banner-amount { font-size: 1.1rem !important; }
+
+            .split-grid { gap: 8px !important; }
+
+            .split-box { padding: 9px !important; }
+
+            .split-box-head {
+                margin-bottom: 8px !important;
+                padding-bottom: 5px !important;
+            }
+
+            .percent-input {
+                width: 50px !important;
+                padding: 4px 5px !important;
+                font-size: 0.76rem !important;
+            }
+
+            .percent-sign { font-size: 0.68rem !important; }
+
+            .split-stat {
+                margin-bottom: 8px !important;
+                font-size: 0.74rem !important;
+            }
+
+            .split-stat-value { font-size: 1.2rem !important; }
+
+            .deduction-panel { padding: 8px !important; }
+
+            .deduction-head { margin-bottom: 6px !important; }
+
+            .deduction-title { font-size: 0.58rem !important; }
+
+            .deduction-row {
+                gap: 4px !important;
+                margin-bottom: 4px !important;
+            }
+
+            .deduction-text,
+            .deduction-amount {
+                padding: 4px 6px !important;
+                font-size: 0.7rem !important;
+                border-radius: 8px !important;
+            }
+
+            .deduction-amount { width: 70px !important; }
+            .money-prefix { font-size: 0.66rem !important; }
+
+            .final-row {
+                margin-top: 8px !important;
+                padding-top: 7px !important;
+            }
+
+            .final-label { font-size: 0.72rem !important; }
+            .final-value { font-size: 1.4rem !important; }
+
+            #promoter-cut,
+            #rg-cut { font-size: 1.2rem !important; }
+
+            #promoter-final { font-size: 1.4rem !important; }
+            #total-collected { font-size: 2rem !important; }
+            #expected-tickets { font-size: 1.2rem !important; }
+
+            .split-banner #grand-revenue {
+                font-size: 1.1rem !important;
+            }
+
+            .t-money,
+            .o-money,
+            #total-tickets-money,
+            #total-online-money {
+                font-size: 0.9rem !important;
+                font-weight: 800 !important;
+            }
+
+            .match-status { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <div class="topbar">
+            <div class="brand">
+                <div class="brand-badge">RG</div>
+                <div>
+                    <h1 class="brand-title">RIO GRANDE</h1>
+                    <p class="brand-subtitle">NIGHT CLUB</p>
+                </div>
+            </div>
+            <div id="match-status" class="match-status"></div>
+        </div>
+
+        <div class="meta-grid">
+            <div>
+                <label class="subtle-label">Date</label>
+                <input type="date" class="field-input" />
+            </div>
+            <div>
+                <label class="subtle-label">Employee</label>
+                <input type="text" placeholder="Cashier Name" class="field-input" />
+            </div>
+        </div>
+
+        <div style="margin-bottom: 14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <h3 class="section-title" style="margin:0;">Physical Tickets Sold</h3>
+                <button onclick="addTicketRow()" class="minimal-btn no-print">
+                    <i class="fa-solid fa-plus"></i> Add Row
+                </button>
+            </div>
+
+            <div class="table-wrap">
+                <table class="responsive-table ticket-table">
+                    <thead>
+                        <tr>
+                            <th>Ticket Price</th>
+                            <th>First #</th>
+                            <th>Last #</th>
+                            <th style="text-align:center; width:110px;">Sold</th>
+                            <th style="text-align:right; width:140px;">Money</th>
+                            <th class="action-col no-print"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tickets-body"></tbody>
+                    <tfoot>
+                        <tr class="tfoot-row">
+                            <td colspan="3" style="text-align:right;">Physical Totals</td>
+                            <td id="total-tickets-count" style="text-align:center;">0</td>
+                            <td id="total-tickets-money" style="text-align:right;">$0.00</td>
+                            <td class="action-cell no-print"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="mobile-total-card" id="ticket-mobile-total">
+                <div class="mobile-total-row"><span>Physical Totals</span><span id="mobile-total-tickets-count">0 tickets</span></div>
+                <div class="mobile-total-row"><span>Money</span><span id="mobile-total-tickets-money">$0.00</span></div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 14px;">
+            <div class="toggle-row no-print">
+                <input type="checkbox" id="has-online-tickets" onchange="toggleOnlineTickets()" style="width:16px; height:16px; accent-color:#111827; cursor:pointer;">
+                <label for="has-online-tickets" class="toggle-label" style="cursor:pointer;">Include Online Tickets</label>
+            </div>
+
+            <div id="online-section" class="hidden">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <h3 class="section-title" style="margin:0;">Online Tickets Sold</h3>
+                    <button onclick="addOnlineRow()" class="minimal-btn blue no-print">
+                        <i class="fa-solid fa-plus"></i> Add Website
+                    </button>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="responsive-table online-table">
+                        <thead class="online-head">
+                            <tr>
+                                <th>Website Name</th>
+                                <th style="width:110px;">Price</th>
+                                <th style="width:110px;">Fee</th>
+                                <th style="text-align:center; width:110px;">Sold</th>
+                                <th style="text-align:right; width:140px;">Collected</th>
+                                <th class="action-col no-print"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="online-body"></tbody>
+                        <tfoot>
+                            <tr class="tfoot-row">
+                                <td colspan="3" style="text-align:right;">Online Totals</td>
+                                <td id="total-online-count" style="text-align:center;">0</td>
+                                <td id="total-online-money" style="text-align:right;">$0.00</td>
+                                <td class="action-cell no-print"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="mobile-total-card" id="online-mobile-total">
+                    <div class="mobile-total-row"><span>Online Totals</span><span id="mobile-total-online-count">0 tickets</span></div>
+                    <div class="mobile-total-row"><span>Collected</span><span id="mobile-total-online-money">$0.00</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layout-grid">
+            <div class="card cash-card">
+                <h3 class="section-title">Cashier Box</h3>
+                <div class="cash-list" id="cash-breakdown"></div>
+
+                <div class="cash-row credit-row">
+                    <div class="cash-left">
+                        <label class="cash-label" style="min-width:130px;">Credit / Debit Cards</label>
+                    </div>
+                    <div class="cash-right">
+                        <span class="money-prefix">$</span>
+                        <input
+                            type="number"
+                            id="cash-credit"
+                            oninput="calculateTotals()"
+                            placeholder="0.00"
+                            class="cash-qty"
+                            style="width:92px;"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-card card" id="summary-box">
+                <div class="summary-label">Total Collected in Box</div>
+                <div id="total-collected" class="summary-total">$0.00</div>
+
+                <div class="summary-label">Expected from Physical Tickets</div>
+                <div id="expected-tickets" class="summary-sub">$0.00</div>
+
+                <div class="summary-divider">
+                    <div class="summary-diff-row">
+                        <span>Box Difference</span>
+                        <span id="difference-amount">$0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 14px;">
+            <div class="toggle-row no-print">
+                <input type="checkbox" id="is-partnership" onchange="togglePartnership()" style="width:16px; height:16px; accent-color:#111827; cursor:pointer;">
+                <label for="is-partnership" class="toggle-label" style="cursor:pointer;">Partnership Event Split</label>
+            </div>
+
+            <div id="partnership-section" class="hidden split-card card">
+                <div class="split-banner">
+                    <span id="split-base-label">Split Base (Total Box)</span>
+                    <span>•</span>
+                    <span id="grand-revenue" class="banner-amount">$0.00</span>
+                </div>
+
+                <div class="split-grid">
+                    <div class="split-box">
+                        <div class="split-box-head">
+                            <label class="section-title" style="margin:0;">Promoter %</label>
+                            <div class="percent-wrap">
+                                <input
+                                    type="number"
+                                    id="promoter-percent"
+                                    value="80"
+                                    class="percent-input"
+                                    oninput="handlePercentChange('promoter')"
+                                />
+                                <span class="percent-sign">%</span>
+                            </div>
+                        </div>
+
+                        <div class="split-stat">
+                            <span class="split-stat-label">Gross Cut</span>
+                            <span id="promoter-cut" class="split-stat-value">$0.00</span>
+                        </div>
+
+                        <div class="deduction-panel">
+                            <div class="deduction-head">
+                                <span class="deduction-title">Advances / Deductions</span>
+                                <button onclick="addDeductionRow()" class="no-print" style="border:none;background:none;color:#111827;font-size:11px;font-weight:800;cursor:pointer;">+ Add</button>
+                            </div>
+                            <div id="deductions-list"></div>
+                        </div>
+
+                        <div class="final-row">
+                            <span class="final-label">Final Payout</span>
+                            <span id="promoter-final" class="final-value">$0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="split-box">
+                        <div class="split-box-head">
+                            <label class="section-title" style="margin:0;">Rio Grande %</label>
+                            <div class="percent-wrap">
+                                <input
+                                    type="number"
+                                    id="rg-percent"
+                                    value="20"
+                                    class="percent-input"
+                                    oninput="handlePercentChange('rg')"
+                                />
+                                <span class="percent-sign">%</span>
+                            </div>
+                        </div>
+
+                        <div class="final-row" style="margin-top:auto;">
+                            <span class="final-label">Total RG Cut</span>
+                            <span id="rg-cut" class="final-value">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="window.print()" class="print-btn no-print">
+            <i class="fa-solid fa-print"></i> Print Report
+        </button>
+    </div>
+
+    <script>
+        let ticketIdCounter = 0;
+        let onlineIdCounter = 0;
+        let deductionIdCounter = 0;
+
+        const bills = [
+            { id: 'hundreds', label: '$100 Bills', multiplier: 100 },
+            { id: 'fifties', label: '$50 Bills', multiplier: 50 },
+            { id: 'twenties', label: '$20 Bills', multiplier: 20 },
+            { id: 'tens', label: '$10 Bills', multiplier: 10 },
+            { id: 'fives', label: '$5 Bills', multiplier: 5 },
+            { id: 'ones', label: '$1 Bills', multiplier: 1 }
+        ];
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(Number(value) || 0);
+        }
+
+        function clampPercent(value) {
+            const num = parseFloat(value);
+            if (isNaN(num)) return 0;
+            return Math.max(0, Math.min(100, num));
+        }
+
+        function init() {
+            renderCashInputs();
+            addTicketRow();
+            addOnlineRow();
+            addDeductionRow();
+            calculateTotals();
+        }
+
+        function renderCashInputs() {
+            const container = document.getElementById('cash-breakdown');
+            container.innerHTML = '';
+
+            bills.forEach(bill => {
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="cash-row">
+                        <div class="cash-left">
+                            <label class="cash-label">${bill.label}</label>
+                            <span class="cash-multiplier">x</span>
+                        </div>
+                        <div class="cash-right">
+                            <input
+                                type="number"
+                                id="cash-${bill.id}"
+                                oninput="calculateTotals()"
+                                placeholder="Qty"
+                                class="cash-qty"
+                            />
+                            <span id="subtotal-${bill.id}" class="cash-subtotal">${formatCurrency(0)}</span>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        function toggleOnlineTickets() {
+            const isChecked = document.getElementById('has-online-tickets').checked;
+            const section = document.getElementById('online-section');
+
+            if (isChecked) {
+                section.classList.remove('hidden');
+                section.classList.add('block');
+            } else {
+                section.classList.add('hidden');
+                section.classList.remove('block');
+            }
+
+            calculateTotals();
+        }
+
+        function togglePartnership() {
+            const isChecked = document.getElementById('is-partnership').checked;
+            const section = document.getElementById('partnership-section');
+
+            if (isChecked) {
+                section.classList.remove('hidden');
+                section.classList.add('block');
+            } else {
+                section.classList.add('hidden');
+                section.classList.remove('block');
+            }
+
+            calculateTotals();
+        }
+
+        function handlePercentChange(changed) {
+            const promoterInput = document.getElementById('promoter-percent');
+            const rgInput = document.getElementById('rg-percent');
+
+            let promoter = clampPercent(promoterInput.value);
+            let rg = clampPercent(rgInput.value);
+
+            if (changed === 'promoter') {
+                rg = 100 - promoter;
+            } else {
+                promoter = 100 - rg;
+            }
+
+            promoterInput.value = promoter;
+            rgInput.value = rg;
+
+            calculateTotals();
+        }
+
+        function addTicketRow() {
+            const tbody = document.getElementById('tickets-body');
+            const rowId = `ticket-${ticketIdCounter++}`;
+
+            tbody.insertAdjacentHTML('beforeend', `
+                <tr id="${rowId}" class="ticket-row">
+                    <td data-label="Ticket Price"><input type="number" class="table-input t-price" placeholder="0.00" oninput="calculateTotals()" /></td>
+                    <td data-label="First #"><input type="number" class="table-input t-first" placeholder="0" oninput="calculateTotals()" /></td>
+                    <td data-label="Last #"><input type="number" class="table-input t-last" placeholder="0" oninput="calculateTotals()" /></td>
+                    <td data-label="Sold" class="readonly-cell t-sold">0</td>
+                    <td data-label="Money" class="readonly-money t-money">${formatCurrency(0)}</td>
+                    <td class="action-cell no-print">
+                        <button onclick="removeRow('${rowId}')" class="remove-btn" title="Delete row">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+
+            calculateTotals();
+        }
+
+        function addOnlineRow() {
+            const tbody = document.getElementById('online-body');
+            const rowId = `online-${onlineIdCounter++}`;
+
+            tbody.insertAdjacentHTML('beforeend', `
+                <tr id="${rowId}" class="online-row">
+                    <td data-label="Website Name"><input type="text" class="table-input o-web" placeholder="e.g. Eventbrite" /></td>
+                    <td data-label="Price"><input type="number" class="table-input o-price" placeholder="0.00" oninput="calculateTotals()" /></td>
+                    <td data-label="Fee"><input type="number" class="table-input o-fee" placeholder="0.00" /></td>
+                    <td data-label="Sold"><input type="number" class="table-input o-sold" placeholder="0" oninput="calculateTotals()" style="text-align:center;" /></td>
+                    <td data-label="Collected" class="online-money o-money">${formatCurrency(0)}</td>
+                    <td class="action-cell no-print">
+                        <button onclick="removeRow('${rowId}')" class="remove-btn" title="Delete row">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+
+            calculateTotals();
+        }
+
+        function addDeductionRow() {
+            const list = document.getElementById('deductions-list');
+            const rowId = `deduct-${deductionIdCounter++}`;
+
+            list.insertAdjacentHTML('beforeend', `
+                <div id="${rowId}" class="deduction-row">
+                    <input type="text" class="d-motive deduction-text" placeholder="Motive" />
+                    <span class="money-prefix">$</span>
+                    <input type="number" class="d-amount deduction-amount" placeholder="0.00" oninput="calculateTotals()" />
+                    <button onclick="removeRow('${rowId}')" class="remove-btn no-print" title="Delete row">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            `);
+
+            calculateTotals();
+        }
+
+        function removeRow(rowId) {
+            const el = document.getElementById(rowId);
+            if (!el) return;
+
+            const parent = el.parentElement;
+            if ((parent.id === 'tickets-body' || parent.id === 'online-body') && parent.children.length <= 1) {
+                return;
+            }
+
+            el.remove();
+            calculateTotals();
+        }
+
+        function calculateTotals() {
+            let tTickets = 0;
+            let tMoney = 0;
+
+            document.querySelectorAll('.ticket-row').forEach(row => {
+                const price = parseFloat(row.querySelector('.t-price').value) || 0;
+                const first = parseInt(row.querySelector('.t-first').value) || 0;
+                const last = parseInt(row.querySelector('.t-last').value) || 0;
+
+                let sold = 0;
+                let money = 0;
+
+                if (last > first && first > 0) {
+                    sold = Math.max(0, (last - first) - 1);
+                    money = sold * price;
+                }
+
+                row.querySelector('.t-sold').textContent = sold;
+                row.querySelector('.t-money').textContent = formatCurrency(money);
+
+                tTickets += sold;
+                tMoney += money;
+            });
+
+            document.getElementById('total-tickets-count').textContent = tTickets;
+            document.getElementById('total-tickets-money').textContent = formatCurrency(tMoney);
+            document.getElementById('mobile-total-tickets-count').textContent = `${tTickets} tickets`;
+            document.getElementById('mobile-total-tickets-money').textContent = formatCurrency(tMoney);
+            document.getElementById('expected-tickets').textContent = formatCurrency(tMoney);
+
+            let oTickets = 0;
+            let oMoney = 0;
+            const hasOnline = document.getElementById('has-online-tickets').checked;
+
+            document.querySelectorAll('.online-row').forEach(row => {
+                if (hasOnline) {
+                    const price = parseFloat(row.querySelector('.o-price').value) || 0;
+                    const sold = parseInt(row.querySelector('.o-sold').value) || 0;
+                    const money = sold * price;
+
+                    row.querySelector('.o-money').textContent = formatCurrency(money);
+                    oTickets += sold;
+                    oMoney += money;
+                } else {
+                    row.querySelector('.o-money').textContent = formatCurrency(0);
+                }
+            });
+
+            document.getElementById('total-online-count').textContent = oTickets;
+            document.getElementById('total-online-money').textContent = formatCurrency(oMoney);
+            document.getElementById('mobile-total-online-count').textContent = `${oTickets} tickets`;
+            document.getElementById('mobile-total-online-money').textContent = formatCurrency(oMoney);
+
+            let cMoney = 0;
+
+            bills.forEach(bill => {
+                const qty = parseInt(document.getElementById(`cash-${bill.id}`).value) || 0;
+                const subtotal = qty * bill.multiplier;
+                document.getElementById(`subtotal-${bill.id}`).textContent = formatCurrency(subtotal);
+                cMoney += subtotal;
+            });
+
+            cMoney += parseFloat(document.getElementById('cash-credit').value) || 0;
+            document.getElementById('total-collected').textContent = formatCurrency(cMoney);
+
+            const diff = cMoney - tMoney;
+            const diffEl = document.getElementById('difference-amount');
+            const matchEl = document.getElementById('match-status');
+            const summaryBox = document.getElementById('summary-box');
+
+            matchEl.style.display = 'none';
+            matchEl.className = 'match-status';
+            summaryBox.style.background = '#fcfcfc';
+            summaryBox.style.borderColor = '#e5e7eb';
+
+            if (tMoney === 0 && cMoney === 0) {
+                diffEl.textContent = formatCurrency(0);
+                diffEl.style.color = '#111827';
+            } else if (diff === 0) {
+                diffEl.textContent = formatCurrency(0);
+                diffEl.style.color = 'var(--green-text)';
+                matchEl.style.display = 'inline-flex';
+                matchEl.style.background = 'var(--green-soft)';
+                matchEl.style.color = 'var(--green-text)';
+                matchEl.innerHTML = '<i class="fa-solid fa-check"></i> Match';
+                summaryBox.style.background = 'var(--green-soft)';
+                summaryBox.style.borderColor = 'var(--green-border)';
+            } else if (diff > 0) {
+                diffEl.textContent = `+${formatCurrency(diff)}`;
+                diffEl.style.color = 'var(--blue-text)';
+                matchEl.style.display = 'inline-flex';
+                matchEl.style.background = 'var(--blue-soft)';
+                matchEl.style.color = 'var(--blue-text)';
+                matchEl.innerHTML = '<i class="fa-solid fa-arrow-up"></i> Overage';
+                summaryBox.style.background = 'var(--blue-soft)';
+                summaryBox.style.borderColor = 'var(--blue-border)';
+            } else {
+                diffEl.textContent = `-${formatCurrency(Math.abs(diff))}`;
+                diffEl.style.color = '#111827';
+            }
+
+            if (document.getElementById('is-partnership').checked) {
+                const grandRevenue = cMoney + oMoney;
+                document.getElementById('grand-revenue').textContent = formatCurrency(grandRevenue);
+
+                const splitLabel = document.getElementById('split-base-label');
+                splitLabel.textContent = oMoney > 0
+                    ? 'Split Base (Total Box + Online Sales)'
+                    : 'Split Base (Total Box)';
+
+                const pPercent = clampPercent(document.getElementById('promoter-percent').value);
+                const rgPercent = clampPercent(document.getElementById('rg-percent').value);
+
+                document.getElementById('promoter-percent').value = pPercent;
+                document.getElementById('rg-percent').value = rgPercent;
+
+                const pCut = grandRevenue * (pPercent / 100);
+                const rgCut = grandRevenue * (rgPercent / 100);
+
+                document.getElementById('promoter-cut').textContent = formatCurrency(pCut);
+                document.getElementById('rg-cut').textContent = formatCurrency(rgCut);
+
+                let totalDeductions = 0;
+                document.querySelectorAll('.d-amount').forEach(input => {
+                    totalDeductions += parseFloat(input.value) || 0;
+                });
+
+                const finalPayout = pCut - totalDeductions;
+                document.getElementById('promoter-final').textContent = formatCurrency(finalPayout);
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
